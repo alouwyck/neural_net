@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import random
 
 
@@ -68,3 +69,14 @@ class NeuralNetwork:
     def error(self, X, Y):
         return np.mean(np.square(self.predict(X) - Y), axis=0)
         
+
+if __name__ == "__main__":
+    data = pd.read_csv("candy-data.csv")
+    Y = data.winpercent.values / 100
+    X = data.drop(labels=["competitorname", "winpercent"], axis=1).values
+    model = NeuralNetwork([8, 5], alpha=0.1, num_of_epochs=10000, batch_size=len(data)//5)
+    model.fit(X, Y.reshape(-1, 1))
+    plt.plot(model.losses)
+    plt.xlabel("epoch")
+    plt.ylabel("loss")
+    plt.show()
